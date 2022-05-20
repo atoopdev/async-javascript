@@ -1,7 +1,16 @@
 // add global variable containing XHR object here
 
+let httpRequest = new XMLHttpRequest();
+
 
 // add get() function here
+function get(url, success){
+    httpRequest.open('GET', url);
+    httpRequest.onload = function(){
+        success(httpRequest.responseText);
+    }
+    httpRequest.send();
+}
 
 
 function tempToF(kelvin) {
@@ -30,8 +39,10 @@ function successHandler(data) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const apiKey = ''; // ADD YOUR API KEY BETWEEN THE QUOTES
+    const apiKey = 'ce9529aa97c63e9d8872f82133abe8f9'; // ADD YOUR API KEY BETWEEN THE QUOTES
     const url = 'https://api.openweathermap.org/data/2.5/weather?q=los+angeles&APPID=' + apiKey;
     // add get() function call here
+    get(url, successHandler);
+    // successHandler(httpRequest.responseText);
     
 });

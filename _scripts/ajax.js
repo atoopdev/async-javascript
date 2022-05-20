@@ -4,10 +4,15 @@ let httpRequest = new XMLHttpRequest();
 
 
 // add get() function here
-function get(url, success){
+function get(url, success, fail){
     httpRequest.open('GET', url);
     httpRequest.onload = function(){
+        if(httpRequest.status === 200){
         success(httpRequest.responseText);
+        }else{
+            // if fails grab error code
+            fail(httpRequest.status);
+        }
     }
     httpRequest.send();
 }
@@ -38,11 +43,18 @@ function successHandler(data) {
     weatherDiv.classList.remove('hidden');
 }
 
+function failHandler(status){
+    console.log(status);
+    const weatherDiv = document.querySelector('#weather');
+    weatherDiv.classList.remove('hidden');
+
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const apiKey = 'ce9529aa97c63e9d8872f82133abe8f9'; // ADD YOUR API KEY BETWEEN THE QUOTES
     const url = 'https://api.openweathermap.org/data/2.5/weather?q=los+angeles&APPID=' + apiKey;
     // add get() function call here
-    get(url, successHandler);
+    get(url, successHandler, failHandler);
     // successHandler(httpRequest.responseText);
     
 });

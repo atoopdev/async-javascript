@@ -69,23 +69,41 @@ function get(url) {
   
     
     // all allows us to make multiple requests and wait to get all until done processing
-    Promise.all([get(urls[0]), get(urls[1]), get(urls[2]), get(urls[3])])
-      .then(function(responses) {
-        //   return array of 4 template literals
-        return responses.map(function(response) {
+    // Promise.all([get(urls[0]), get(urls[1]), get(urls[2]), get(urls[3])])
+    //   .then(function(responses) {
+    //     //   return array of 4 template literals
+    //     return responses.map(function(response) {
+    //         // return single literal
+    //       return successHandler(response);
+    //     });
+    //   })
+    //   .then(function(literals) {
+    //     weatherDiv.innerHTML = `<h1>Weather</h1>${literals.join('')}`;
+    //   })
+    //   .catch(function(status) {
+    //     failHandler(status);
+    //   })
+    // //   executes regardless of success or reject
+    //   .finally(function() {
+    //     weatherDiv.classList.remove('hidden');
+    //   });
+    // put in paren to instantly invoke
+    (async function(){
+        // all responses go here
+        let responses = [];
+        // waits to get data before pushing to array
+        responses.push(await get(urls[0]));
+        responses.push(await get(urls[1]));
+        responses.push(await get(urls[2]));
+        responses.push(await get(urls[3]));
+
+        // create new array based on responses above
+        let literals = responses.map(function(response) {
             // return single literal
-          return successHandler(response);
-        });
-      })
-      .then(function(literals) {
-        weatherDiv.innerHTML = `<h1>Weather</h1>${literals.join('')}`;
-      })
-      .catch(function(status) {
-        failHandler(status);
-      })
-    //   executes regardless of success or reject
-      .finally(function() {
-        weatherDiv.classList.remove('hidden');
-      });
-  });
+            return successHandler(response);
+             });
+             weatherDiv.innerHTML = `<h1>Weather</h1>${literals.join('')}`;
+             weatherDiv.classList.remove('hidden');
+    })();
+  });//   end event listener
   

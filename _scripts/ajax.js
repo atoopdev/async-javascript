@@ -88,8 +88,10 @@ function get(url) {
     //     weatherDiv.classList.remove('hidden');
     //   });
     // put in paren to instantly invoke
+
     (async function(){
-        // all responses go here
+        try{
+            // all responses go here
         let responses = [];
         // waits to get data before pushing to array
         responses.push(await get(urls[0]));
@@ -98,12 +100,23 @@ function get(url) {
         responses.push(await get(urls[3]));
 
         // create new array based on responses above
+        // everything below is synchronous
         let literals = responses.map(function(response) {
             // return single literal
             return successHandler(response);
              });
              weatherDiv.innerHTML = `<h1>Weather</h1>${literals.join('')}`;
-             weatherDiv.classList.remove('hidden');
-    })();
+
+        }
+        // error handling
+        catch (status){
+            failHandler(status);
+        }
+        // executes whether successful or not
+        finally{
+            weatherDiv.classList.remove('hidden');
+        }
+        
+    })(); // close async function
   });//   end event listener
   

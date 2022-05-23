@@ -16,9 +16,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const ctx = outputCanvas.getContext('2d');
   let selectedFilter = '';
 
+  // add a worker so that image processing does not block web page rendering
+
   const worker = new Worker("_scripts/filter-worker.js");
-  worker.postMessage(`Hello Worker`);
-  console.log("Message sent to worker");
+
+  // test 
+  // worker.postMessage(`Hello Worker`);
+  // console.log("Message sent to worker");
 
   const getImageData = (image) => {
     const tempCanvas = document.createElement('canvas');
@@ -103,8 +107,13 @@ document.addEventListener('DOMContentLoaded', function() {
     selectedFilter = 'grayscale';
     const imageDataObj = getImageData(image);
     const level = Number(range.value);
-    const results = applyFilter('grayscale', level, imageDataObj);
-    displayFilteredImage(ctx, results);
+    // const results = applyFilter('grayscale', level, imageDataObj);
+    worker.postMessage({
+      filter:selectedFilter,
+      level:level,
+      image:imageDataObj,
+    });
+    // displayFilteredImage(ctx, results);
     slider.classList.add('hidden');    
   });
 
@@ -114,8 +123,13 @@ document.addEventListener('DOMContentLoaded', function() {
     range.max = 100;
     range.value = 50;
     const level = Number(range.value);
-    const results = applyFilter('brightness', level, imageDataObj);
-    displayFilteredImage(ctx, results);
+    // const results = applyFilter('brightness', level, imageDataObj);
+    worker.postMessage({
+      filter:selectedFilter,
+      level:level,
+      image:imageDataObj,
+    });
+    // displayFilteredImage(ctx, results);
     slider.classList.remove('hidden');
   });
 
@@ -125,8 +139,13 @@ document.addEventListener('DOMContentLoaded', function() {
     range.max = 255;
     range.value = 127;
     const level = Number(range.value);
-    const results = applyFilter('threshold', level, imageDataObj);
-    displayFilteredImage(ctx, results);
+    // const results = applyFilter('threshold', level, imageDataObj);
+    worker.postMessage({
+      filter:selectedFilter,
+      level:level,
+      image:imageDataObj,
+    });
+    // displayFilteredImage(ctx, results);
     slider.classList.remove('hidden');
   });
 
@@ -150,4 +169,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   image.addEventListener('load', resetCanvas);
+
+  worker.addEventListener("message", function(e){
+    console.log("Received message back from worker: ");
+    console.log(e.data);
+    displayFilteredImage(ctx, e.data); // e.data is the work that comes back from web worker
+  })
 });
+

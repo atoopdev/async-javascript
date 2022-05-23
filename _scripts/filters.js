@@ -16,7 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const ctx = outputCanvas.getContext('2d');
   let selectedFilter = '';
 
-  const worker = new Worker("./filter-worker.js");
+  const worker = new Worker("_scripts/filter-worker.js");
+  worker.postMessage(`Hello Worker`);
+  console.log("Message sent to worker");
 
   const getImageData = (image) => {
     const tempCanvas = document.createElement('canvas');
